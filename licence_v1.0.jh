@@ -1,0 +1,108 @@
+
+application {
+  config {
+    baseName manager
+    applicationType microservice
+    serverPort 8020
+  }
+  entities UserStatus, TaskStatus, User, Role, RoleAssignment, Team, Project, Task, Comment, TaskRelationship
+}
+
+
+entity UserStatus {
+	id Long required
+    name String required
+}
+
+entity TaskStatus {
+	id Long required
+    name String required
+}
+
+entity User {
+	id Long required
+    name String required
+    email String required
+    password String required
+    birthday LocalDate required
+    //gitAccount String required
+    image ImageBlob
+    team String
+    creation String required
+    status String required
+}
+
+entity Role {
+	id Long required
+    name String required
+}
+
+entity RoleAssignment {
+	id Long required
+    user Long required
+    role Long required
+}
+
+entity Team {
+	id Long required
+	name String required
+	image ImageBlob
+	score Integer required
+}
+
+entity Project {
+	id Long required
+	name String required
+	description String required
+	owner Long required
+	team Long required
+}
+
+entity Task {
+	id Long required
+	title String required
+	description String required
+	estimation Integer required
+	state Long required
+	owner Long required
+    assignee Long required
+    relationship Long
+}
+
+entity TaskRelationship {
+	id Long required
+    name String required
+    task Long required
+}
+
+entity Comment {
+	id Long required
+    task Long required
+    user Long required
+    text String required
+    date LocalDate required
+}
+
+relationship OneToMany {
+	User{id} to RoleAssignment{user}
+    Role{id} to RoleAssignment{role}
+     
+    Task{id} to Comment{task}
+    User{id} to Comment{user}
+    
+    Task{relationship} to TaskRelationship{id}
+    
+}
+
+relationship OneToOne {
+	User{status} to UserStatus{id}
+
+	User{team} to Team{id}
+    
+    Task{owner} to User{id}
+    Task{assignee} to User{id}
+    
+    Project{team} to Team{id}
+    
+    TaskStatus{id} to Task{status}
+}
